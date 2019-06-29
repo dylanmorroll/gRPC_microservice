@@ -11,38 +11,33 @@ import json
 # connect to the grpc server
 grpc_channel = grpc.insecure_channel('localhost:50051')
 
-# # create a flask app
-# app = Flask(__name__)
-#
-# #the default page
-# @app.route("/")
-# def serve_data():
-# create a stub to utilise the grpc server
-stub = grpc_classes.ElectrictyDataStub(grpc_channel)
+# create a flask app
+app = Flask(__name__)
 
-# get the data from the gRPC server
-data = stub.GetData(pb_classes.RequestInfo())
+#the default page
+@app.route("/")
+def serve_data():
+    # create a stub to utilise the grpc server
+    stub = grpc_classes.ElectrictyDataStub(grpc_channel)
 
-# turn the meter readings into a list for JSON conversion
-pair_list = []
-for item in data.data_list:
-    pair_list.append((item.a, item.b))
+    # get the data from the gRPC server
+    data = stub.GetData(pb_classes.RequestInfo())
 
-# create a dictionary from the information for JSON conversion
-data_dict = {
-    "a_name": data.a_name,
-    "b_name": data.b_name,
-    "data_list": pair_list
-}
+    # turn the meter readings into a list for JSON conversion
+    pair_list = []
+    for item in data.data_list:
+        pair_list.append((item.a, item.b))
 
-# convert into JSON:
-data_json = json.dumps(data_dict)
+    # create a dictionary from the information for JSON conversion
+    data_dict = {
+        "a_name": data.a_name,
+        "b_name": data.b_name,
+        "data_list": pair_list
+    }
 
-# the result is a JSON string:
-print(data_json)
+    # convert into JSON:
+    data_json = json.dumps(data_dict)
 
-    #     # return is as a JSON object
-    # return render_template("templates/display_data.html",
-    #                        a_name=data.a_name,
-    #                        b_name=data.b_name,
-    #                        data=data.data_list)
+    # return is as a JSON object
+    return render_template('data_display.html', data_json=data_json)
+
