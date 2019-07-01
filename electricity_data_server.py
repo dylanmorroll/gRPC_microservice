@@ -3,7 +3,7 @@ import grpc
 import time
 from concurrent import futures
 
-#internal imports
+# internal imports
 import electricity_data_pb2 as pb_classes
 import electricity_data_pb2_grpc as grpc_classes
 
@@ -33,16 +33,19 @@ class ElectrictyDataServicer(grpc_classes.ElectrictyDataServicer):
     # method to return the meter usage data (called by the client)
     def GetData(self, request, context):
         data = getMeterUsage()
+        print("return data")
         return data
 
 # start the server
 def serve():
+    print("start server")
     # create and start a grpc server
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     grpc_classes.add_ElectrictyDataServicer_to_server(
         ElectrictyDataServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
+    print("sever started")
 
     # sleep-loop to wait for connections
     _ONE_DAY_IN_SECONDS = 60 * 60 * 24

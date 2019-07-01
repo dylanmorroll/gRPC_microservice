@@ -6,6 +6,7 @@ import electricity_data_pb2_grpc as grpc_classes
 # flask imports
 from flask import Flask, g, render_template
 
+# other imports
 import json
 
 # connect to the grpc server
@@ -23,21 +24,23 @@ def serve_data():
     # get the data from the gRPC server
     data = stub.GetData(pb_classes.RequestInfo())
 
-    # turn the meter readings into a list for JSON conversion
-    pair_list = []
-    for item in data.data_list:
-        pair_list.append((item.a, item.b))
-
     # create a dictionary from the information for JSON conversion
     data_dict = {
         "a_name": data.a_name,
-        "b_name": data.b_name,
-        "data_list": pair_list
+        "b_name": data.b_name
     }
+
+    # turn the meter readings into a list for JSON conversion
+    meter_readings = []
+    for item in data.data_list:
+        meter_readings.append((item.a, item.b))
+    data_dict["meter_readings"] = meter_readings
 
     # convert into JSON:
     data_json = json.dumps(data_dict)
 
-    # return is as a JSON object
-    return render_template('data_display.html', data_json=data_json)
+    # return is as a JSON object to the HTML page
+    return render_template('data_display.html', json_data=data_json)
 
+if __name__ == "__main__":
+    app.run(debug=True)

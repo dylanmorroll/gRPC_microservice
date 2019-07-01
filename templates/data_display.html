@@ -1,5 +1,27 @@
 <!doctype html>
-<title>time-based electricity consumption data</title>
-<section class="content">'
-    {{ data_json }}
-</section>
+<html>
+<title>Time-Based Electricity Consumption Data</title>
+<body>
+<h2>Time-Based Electricity Consumption Data</h2>
+<p id="table"></p>
+
+<script>
+// turn the json string passed from the flask server into an object
+jsonData = "{{ json_data }}";
+jsonData = jsonData.replace(new RegExp("&#34;", "g"), "\"");
+jsonData = JSON.parse(jsonData);
+
+// create a html table from the json object
+table = "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"300px\">"
+table += "<tr><th>" + jsonData.a_name + "</th><th>" + jsonData.b_name + "</th></tr>";
+for (data_pair of jsonData.meter_readings) {
+    table += "<tr><td>" + data_pair[0] + "</td><td>" + data_pair[1] + "</td></tr>";
+}
+table += "</table>";
+
+// add the table into the document
+document.getElementById('table').innerHTML = table;
+</script>
+
+</body>
+</html>
