@@ -6,3 +6,10 @@ First I created a gRPC server client structure in Python. To do this I wrote the
 To complement this I created the electricty_data_client.py file to generate a stub from the server and retrieve the data information. Once I had this gRPC server and client set up, I modified the electricty_data_client.py to also start a Flask server. Now, when ran, it starts a server of it's own which can be accessed from a web browser. When the page is accessed it pulls the data from the gRPC server (this way it allows the latest information to be pulled from the gRPC server in case the data has been modified since the Flask server started), converts it into a JSON string, and passes it to the web page.
 
 Finally I then created a web page that takes the JSON data that is passed from the server and parses it using javascript. Once it is parsed it uses the information to generate a table so it is in a digestable format.
+
+To run both servers execute:
+python electricity_data_server.py
+python electricity_data_client.py
+in separate terminals to start both servers. Then access:
+http://127.0.0.1:5000/
+to see the web page.
